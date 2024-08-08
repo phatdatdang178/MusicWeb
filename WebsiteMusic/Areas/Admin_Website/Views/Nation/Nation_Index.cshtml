@@ -1,0 +1,169 @@
+﻿@model IEnumerable<WebsiteMusic.Areas.Admin_Website.Data.NationVM>
+
+@{
+    ViewBag.Title = "Quản lý quốc gia";
+    Layout = "~/Areas/Admin_Website/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .vertical-align-middle {
+        vertical-align: middle !important;
+    }
+</style>
+
+<div style="border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">
+    <div class="table-responsive p-3">
+        <div class="d-flex justify-content-end m-2">
+            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addNationModal">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Hình ảnh</th>
+                    <th>Tên quốc gia</th>
+                    <th>Tùy chọn</th>
+                </tr>
+            </thead>
+            <tbody id="categoryTableBody">
+                @foreach (var item in Model)
+                {
+                    <tr data-id="@item.NationId">
+                        <td class="vertical-align-middle">
+                            @if (!string.IsNullOrEmpty(item.NationImageFileName))
+                            {
+                                <img style="width:70px" src="@Url.Content("~/Images/Images_Nation/" + item.NationImageFileName)" alt="Nation Image" />
+                            }
+                            else
+                            {
+                                <span>Không có hình ảnh!</span>
+                            }
+                        </td>
+                        <td class="vertical-align-middle">
+                            @Html.DisplayFor(modelItem => item.NationName)
+                        </td>
+                        <td class="vertical-align-middle">
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editNationModal" data-id="@item.NationId">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteNationModal" data-id="@item.NationId">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Nation Modal -->
+<div class="modal fade" id="addNationModal" tabindex="-1" aria-labelledby="addNationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNationModalLabel">Thêm quốc gia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("AddNation", "Nation", FormMethod.Post, new { id = "addNationForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        @Html.Label("NationImage", "Ảnh quốc gia", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="NationImage" />
+                        <span class="text-danger" data-valmsg-for="NationImage" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("NationName", "Tên quốc gia", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="NationName" required />
+                        <span class="text-danger" data-valmsg-for="NationName" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Nation Modal -->
+<div class="modal fade" id="editNationModal" tabindex="-1" aria-labelledby="editNationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editNationModalLabel">Sửa quốc gia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("EditNation", "Nation", FormMethod.Post, new { id = "editNationForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("NationId", null)
+                    <div class="mb-3">
+                        @Html.Label("NationImage", "Ảnh quốc gia", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="NationImage" />
+                        <span class="text-danger" data-valmsg-for="NationImage" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("NationName", "Tên quốc gia", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="NationName" required />
+                        <span class="text-danger" data-valmsg-for="NationName" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Nation Modal -->
+<div class="modal fade" id="deleteNationModal" tabindex="-1" aria-labelledby="deleteNationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteNationModalLabel">Xóa quốc gia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa quốc gia này không ?</p>
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("DeleteNation", "Nation", FormMethod.Post, new { id = "deleteNationForm" }))
+                {
+                    @Html.Hidden("NationId", null)
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#editNationModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var nationId = button.data('id');
+            var modal = $(this);
+
+            $.get('@Url.Action("EditNation", "Nation")', { id: nationId }, function (data) {
+                modal.find('[name="NationId"]').val(data.NationId);
+                modal.find('[name="NationName"]').val(data.NationName);
+            });
+        });
+
+        $('#deleteNationModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var nationId = button.data('id');
+            var modal = $(this);
+            modal.find('[name="NationId"]').val(nationId);
+        });
+    });
+</script>

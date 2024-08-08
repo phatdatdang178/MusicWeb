@@ -1,0 +1,170 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <link href="~/Style/Admin_Style.css" rel="stylesheet" />
+    <link href="~/Fonts/fontawesome-free-6.5.2-web/css/all.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+    <title>@ViewBag.Title</title>
+    <style>
+        .navbar-nav .nav-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .navbar-nav .nav-item {
+            margin-left: 10px;
+        }
+
+        .dropdown-menu {
+            min-width: 200px;
+        }
+
+        .TEN1 {
+            background: linear-gradient(to right, #4b2bdb, #feb47b);
+            webkit-background-clip: text;
+            color: transparent;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            font-weight: bold;
+            font-size: 25px;
+        }
+
+        .toast {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .toast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .toast-icon {
+            margin-right: 10px;
+        }
+
+        .toast-body {
+            padding-top: 10px;
+        }
+
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1055;
+        }
+
+        .toast .close {
+            border: none;
+            background-color: white;
+        }
+    </style>
+</head>
+<body style="font-family: 'Roboto', sans-serif;">
+    <nav class="navbar navbar-expand-lg fixed-top m-0">
+        <div class="container">
+            <div class="logo">
+                <h4 class="TEN1">BeatVibesDV</h4>
+            </div>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar"
+                 aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasNavbarLabel">BeatVibesDV</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav justify-content-center flex-grow-1">
+                        <li class="nav-item">
+                            @Html.ActionLink("Trang chủ", "Index", "Home", "Views", new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("Bài hát", "Music_Index", "Music", "Views", new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("Tài khoản", "Account_Index", "Account", "Views", new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("Thể loại", "Category_Index", "Category", "Views", new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("Quốc gia", "Nation_Index", "Nation", "Views", new { @class = "nav-link" })
+                        </li>
+                        @*<li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Xem thêm
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li>
+                                        @Html.ActionLink("Tiêu đề", "Title_Index", "Title", "Views", new { @class = "dropdown-item" })
+                                    </li>
+                                    <li>
+                                        @Html.ActionLink("Banner", "Banner_Index", "Banner", "Views", new { @class = "dropdown-item" })
+                                    </li>
+                                </ul>
+                            </li>*@
+                    </ul>
+                </div>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="dropdown ms-2">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    @if (Session["UserName"] != null)
+                    {
+                        <text>@Session["UserName"]</text>
+                    }
+                    <img style="width:35px;margin-left:5px" src="@Url.Content("~/Images/Images_Account/" + (Session["UserImage"] ?? "default_account.png"))" alt="User Image" class="rounded-circle ms-">
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="@Url.Action("Logout", "Auth")">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5 pt-4">
+        @RenderBody()
+    </div>
+    <div aria-live="polite" aria-atomic="true">
+        <div id="toast-container">
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var successMessage = '@TempData["SuccessMessage"]';
+            if (successMessage) {
+                var toastHtml = '<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="2000">' +
+                    '<div class="toast-header">' +
+                    '<i class="fas fa-check-circle text-success toast-icon"></i>' +
+                    '<strong class="mr-auto">Thông báo</strong>' +
+                    '<button type="button" class="ml-2 mb-1 close ms-auto" data-bs-dismiss="toast" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span>' +
+                    '</button>' +
+                    '</div>' +
+                    '<div class="toast-body">' + successMessage + '</div>' +
+                    '</div>';
+                $('#toast-container').append(toastHtml);
+                $('.toast').toast('show');
+            }
+        });
+    </script>
+</body>
+</html>

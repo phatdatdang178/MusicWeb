@@ -1,0 +1,226 @@
+﻿@model IEnumerable<WebsiteMusic.Areas.Admin_Website.Data.AccountVM>
+
+@{
+    ViewBag.Title = "Quản lý tài khoản";
+    Layout = "~/Areas/Admin_Website/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .vertical-align-middle {
+        vertical-align: middle !important;
+    }
+
+    .td_email {
+        text-decoration: none;
+    }
+</style>
+
+<div style="border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">
+    <div class="table-responsive p-3">
+        <div class="d-flex justify-content-end m-2">
+            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addAccountModal">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Hình ảnh</th>
+                    <th>Tên tài khoản</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>Tùy chọn</th>
+                </tr>
+            </thead>
+            <tbody id="accountTableBody">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="vertical-align-middle" data-id="@item.AccountId">
+                            @if (!string.IsNullOrEmpty(item.AccountImageFileName))
+                            {
+                                <img style="width:70px" src="@Url.Content("~/Images/Images_Account/" + item.AccountImageFileName)" alt="Account Image" />
+                            }
+                            else
+                            {
+                                <span>Không có hình ảnh!</span>
+                            }
+                        </td>
+                        <td class="vertical-align-middle">@Html.DisplayFor(modelItem => item.AccountName)</td>
+                        <td class="vertical-align-middle">@Html.DisplayFor(modelItem => item.AccountEmail)</td>
+                        <td class="vertical-align-middle">@Html.DisplayFor(modelItem => item.AccountRole)</td>
+                        <td class="vertical-align-middle">
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editAccountModal" data-id="@item.AccountId">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteAccountModal" data-id="@item.AccountId">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Account Modal -->
+<div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAccountModalLabel">Thêm tài khoản</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("AddAccount", "Account", FormMethod.Post, new { id = "addAccountForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        @Html.Label("AccountName", "Tên tài khoản", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="AccountName" required />
+                        <span class="text-danger" data-valmsg-for="AccountName" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("AccountEmail", "Email", new { @class = "form-label" })
+                        <input type="email" class="form-control" name="AccountEmail" required />
+                        <span class="text-danger" data-valmsg-for="AccountEmail" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("AccountRole", "Vai trò", new { @class = "form-label" })
+                        <select class="form-control" name="AccountRole" required>
+                            <option value="">--- Chọn vai trò ---</option>
+                            <option value="User">User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                        <span class="text-danger" data-valmsg-for="AccountRole" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("AccountImage", "Hình ảnh", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="AccountImage" />
+                        <span class="text-danger" data-valmsg-for="AccountImage" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Account Modal -->
+<div class="modal fade" id="editAccountModal" tabindex="-1" aria-labelledby="editAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editAccountModalLabel">Sửa tài khoản</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("EditAccount", "Account", FormMethod.Post, new { id = "editAccountForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("AccountId", "")
+                    <div class="mb-3">
+                        @Html.Label("AccountName", "Tên tài khoản", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="AccountName" required />
+                        <span class="text-danger" data-valmsg-for="AccountName" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("AccountEmail", "Email", new { @class = "form-label" })
+                        <input type="email" class="form-control" name="AccountEmail" readonly="readonly" />
+                        <span class="text-danger" data-valmsg-for="AccountEmail" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("AccountRole", "Vai trò", new { @class = "form-label" })
+                        <select class="form-control" name="AccountRole" required>
+                            <option value="">--- Chọn vai trò ---</option>
+                            <option value="User">User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                        <span class="text-danger" data-valmsg-for="AccountRole" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("AccountImage", "Hình ảnh", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="AccountImage" />
+                        <span class="text-danger" data-valmsg-for="AccountImage" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteAccountModalLabel">Xóa tài khoản</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa tài khoản này không?</p>
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("DeleteAccount", "Account", FormMethod.Post, new { id = "deleteAccountForm" }))
+                {
+                    @Html.Hidden("AccountId", null)
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    $('#addAccountForm, #editAccountForm').submit(function (event) {
+        // Trim all input fields
+        $('input, select', this).each(function () {
+            $(this).val($.trim($(this).val()));
+        });
+
+        // Check if any field contains only spaces
+        var isValid = true;
+        $('input[type="text"], input[type="email"], select', this).each(function () {
+            if ($(this).val() === '') {
+                isValid = false;
+                alert("Không được chứa toàn bộ khoảng trắng.");
+                return false;
+            }
+        });
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+
+    $('#editAccountModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var accountId = button.data('id');
+        var modal = $(this);
+
+        $.get('@Url.Action("EditAccount", "Account")', { id: accountId }, function (data) {
+            modal.find('[name="AccountId"]').val(data.AccountId);
+            modal.find('[name="AccountName"]').val(data.AccountName);
+            modal.find('[name="AccountEmail"]').val(data.AccountEmail);
+            modal.find('[name="AccountRole"]').val(data.AccountRole);
+        });
+    });
+
+    $('#deleteAccountModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var accountId = button.data('id');
+        var modal = $(this);
+        modal.find('[name="AccountId"]').val(accountId);
+    });
+});
+</script>

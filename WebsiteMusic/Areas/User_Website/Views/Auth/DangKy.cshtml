@@ -1,0 +1,117 @@
+﻿@model WebsiteMusic.Areas.User_Website.Data.UAccountVM
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef); /* Nền gradient */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 1000px;
+            height: 800px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Đổ bóng mờ */
+            border: 1px solid #e0e0e0; /* Đường viền nhẹ */
+        }
+
+            .form-container h2 {
+                margin-bottom: 1.5rem;
+                font-family: 'Arial', sans-serif;
+                font-weight: bold;
+                color: #343a40;
+            }
+
+            .form-container .btn {
+                width: 100%;
+                padding: 0.75rem;
+                font-size: 1.125rem;
+                border-radius: 8px;
+            }
+
+            .form-container .form-group {
+                margin-bottom: 1.5rem;
+            }
+
+            .form-container label {
+                font-weight: 600;
+                color: #495057;
+            }
+
+        .tab-content {
+            margin-top: 2rem;
+        }
+
+            .tab-content .tab-pane {
+                padding: 2rem;
+            }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Đăng Ký</h2>
+            @using (Html.BeginForm("Register", "Auth", FormMethod.Post, new { @class = "form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AccountName, new { @class = "form-label" })
+                    @Html.TextBoxFor(model => model.AccountName, new { @class = "form-control", placeholder = "Nhập tên tài khoản" })
+                    @Html.ValidationMessageFor(model => model.AccountName, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AccountEmail, new { @class = "form-label" })
+                    @Html.TextBoxFor(model => model.AccountEmail, new { @class = "form-control", placeholder = "Nhập địa chỉ email" })
+                    @Html.ValidationMessageFor(model => model.AccountEmail, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AccountPassword, new { @class = "form-label" })
+                    @Html.PasswordFor(model => model.AccountPassword, new { @class = "form-control", placeholder = "Nhập mật khẩu" })
+                    @Html.ValidationMessageFor(model => model.AccountPassword, "", new { @class = "text-danger" })
+                </div>
+
+                <button type="submit" class="btn btn-primary">Đăng Ký</button>
+            }
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+

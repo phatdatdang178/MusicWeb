@@ -1,0 +1,194 @@
+﻿@model IEnumerable<WebsiteMusic.Areas.Admin_Website.Data.TitleVM>
+
+@{
+    ViewBag.Title = "Quản lý tiêu đề";
+    Layout = "~/Areas/Admin_Website/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .vertical-align-middle {
+        vertical-align: middle !important;
+    }
+</style>
+
+<div style="border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">
+    <div class="table-responsive p-3">
+        <div class="d-flex justify-content-end m-2">
+            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addTitleModal">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Icon tiêu đề</th>
+                    <th>Tên tiêu đề</th>
+                    <th>Loại tiêu đề</th>
+                    <th>Tùy chọn</th>
+                </tr>
+            </thead>
+            <tbody id="titleTableBody">
+                @foreach (var item in Model)
+                {
+                    <tr data-id="@item.TitleId">
+                        <td class="vertical-align-middle">
+                            @if (!string.IsNullOrEmpty(item.TitleIconFileName))
+                            {
+                                <img style="width:50px" src="@Url.Content("~/Images/Images_Title/" + item.TitleIconFileName)" alt="Title Icon" />
+                            }
+                            else
+                            {
+                                <span>Không có hình ảnh !</span>
+                            }
+                        </td>
+                        <td class="vertical-align-middle">
+                            @Html.DisplayFor(modelItem => item.TitleName)
+                        </td>
+                        <td class="vertical-align-middle">
+                            @Html.DisplayFor(modelItem => item.TitleType)
+                        </td>
+                        <td class="vertical-align-middle">
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editTitleModal" data-id="@item.TitleId">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteTitleModal" data-id="@item.TitleId">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Title Modal -->
+<div class="modal fade" id="addTitleModal" tabindex="-1" aria-labelledby="addTitleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTitleModalLabel">Thêm tiêu đề</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("AddTitle", "Title", FormMethod.Post, new { id = "addTitleForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        @Html.Label("TitleIcon", "Icon tiêu đề", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="TitleIcon" />
+                        <span class="text-danger" data-valmsg-for="TitleIcon" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("TitleName", "Tên tiêu đề", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="TitleName" required />
+                        <span class="text-danger" data-valmsg-for="TitleName" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("TitleType", "Loại tiêu đề", new { @class = "form-label" })
+                        <select class="form-control" name="TitleType" required>
+                            <option value="">--- Chọn loại tiêu đề ---</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                        <span class="text-danger" data-valmsg-for="TitleType" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Title Modal -->
+<div class="modal fade" id="editTitleModal" tabindex="-1" aria-labelledby="editTitleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editTitleModalLabel">Sửa tiêu đề</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("EditTitle", "Title", FormMethod.Post, new { id = "editTitleForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("TitleId", null)
+                    <div class="mb-3">
+                        @Html.Label("TitleIcon", "Icon tiêu đề", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="TitleIcon" />
+                        <span class="text-danger" data-valmsg-for="TitleIcon" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("TitleName", "Tên tiêu đề", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="TitleName" required />
+                        <span class="text-danger" data-valmsg-for="TitleName" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("TitleType", "Loại tiêu đề", new { @class = "form-label" })
+                        <select class="form-control" name="TitleType" required>
+                            <option value="">--- Chọn loại tiêu đề ---</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                        <span class="text-danger" data-valmsg-for="TitleType" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Title Modal -->
+<div class="modal fade" id="deleteTitleModal" tabindex="-1" aria-labelledby="deleteTitleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteTitleModalLabel">Xóa tiêu đề</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa tiêu đề này không?</p>
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("DeleteTitle", "Title", FormMethod.Post, new { id = "deleteTitleForm" }))
+                {
+                    @Html.Hidden("TitleId", null)
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+$(document).ready(function () {
+    // Show edit modal and populate fields
+    $('#editTitleModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var titleId = button.data('id');
+        var modal = $(this);
+
+        $.get('@Url.Action("EditTitle", "Title")', { id: titleId }, function (data) {
+            modal.find('[name="TitleId"]').val(data.TitleId);
+            modal.find('[name="TitleName"]').val(data.TitleName);
+            modal.find('[name="TitleType"]').val(data.TitleType);
+        });
+    });
+
+    // Show delete modal and set the TitleId
+    $('#deleteTitleModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var titleId = button.data('id');
+        var modal = $(this);
+        modal.find('[name="TitleId"]').val(titleId);
+    });
+});
+</script>

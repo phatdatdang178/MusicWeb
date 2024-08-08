@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <link href="~/Style/Admin_Style.css" rel="stylesheet" />
+    <link href="~/Fonts/fontawesome-free-6.5.2-web/css/all.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">
+    <script src="~/JS/script.js"></script>
+    <link href="~/Style/style.css" rel="stylesheet" />
+    <title>@ViewBag.Title</title>
+
+</head>
+
+<body>
+    <style>
+        .audio-player-container.hidden {
+            display: none;
+        }
+
+        .audio-player-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            max-width: 600px; /* Giới hạn chiều rộng tối đa */
+            background-color: #f9f9f9;
+            padding: 10px 20px; /* Giảm padding để thanh phát nhỏ hơn */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1000; /* Đặt thấp hơn nếu cần */
+        }
+
+        .audio-info {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+            .audio-info img {
+                object-fit: cover;
+            }
+
+        .album-art {
+            width: 50px; /* Giảm kích thước hình ảnh album */
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .audio-details {
+            flex-grow: 1;
+        }
+
+            .audio-details h5 {
+                margin: 0;
+                font-size: 1em; /* Giảm kích thước tiêu đề */
+            }
+
+            .audio-details p {
+                margin: 0;
+                color: #888;
+                font-size: 0.9em; /* Giảm kích thước tên ca sĩ */
+            }
+
+        .fa-heart {
+            font-size: 1.2em; /* Giảm kích thước icon trái tim */
+            cursor: pointer;
+        }
+
+            .fa-heart.fa-solid {
+                color: red;
+            }
+
+        audio {
+            width: 100%;
+        }
+        }
+    </style>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2 sidebar">
+                <div class="logo">
+                    <h4 class="TEN1">BeatVibesDV</h4>
+                </div>
+                <div class="list-group m-3">
+                    <div>@Html.ActionLink("Khám phá", "Khampha", "Khampha", "Views", new { @class = "nav-link" })</div>
+                    <div>@Html.ActionLink("Bảng xếp hạng", "BXH", "BXH", "Views", new { @class = "nav-link" })</div>
+                    @*<div>@Html.ActionLink("Thể loại", "Theloai", "Theloai", "Views", new { @class = "nav-link" })</div>*@
+                    @*<a href="../web_user/khampha.html" class="list-group-item list-group-item-action active" data-bs-toggle="list">
+                <i class="fa-solid fa-music" style="margin-right: 10px;"></i>Khám phá
+            </a>
+            <a href="../web_user/bangxephang.html" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                <i class="fa-solid fa-chart-simple" style="margin-right: 10px;"></i>Bảng xếp hạng
+            </a>
+            <a href="../web_user/theloai.html" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                <i class="fa-solid fa-icons" style="margin-right: 10px;"></i>Thể loại
+            </a>*@
+                </div>
+                <hr style="border-color: black;margin: 10px 20px;">
+                <div>
+                    <a href="#thuvien" class="custom-link">
+                        <i class="fa-solid fa-heart" style="margin-right: 10px;"></i>Bài hát yêu thích
+                    </a>
+                    <a href="#thuvien" class="custom-link">
+                        <i class="fa-solid fa-list-ul" style="margin-right: 10px;"></i>Dánh sách phát
+                    </a>
+                </div>
+            </div>
+            <div class="col-10 ms-sm-auto col-lg-10">
+                <nav class="navbar navbar-expand-lg navbar-light sticky-top bg-white " style="margin:0;">
+                    <div class="container-fluid">
+                        <form class="d-flex w-75" action="@Url.Action("Timkiem", "Timkiem", new { area = "User_Website" })" method="get">
+                            <div class="input-group search-input">
+                                <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                                <input class="form-control me-2" type="search" name="searchTerm" placeholder="Tìm kiếm bài hát, ca sỹ,..."
+                                       aria-label="Search">
+                                <button class="btn btn-outline-secondary" type="submit">Tìm kiếm</button>
+                            </div>
+                        </form>
+                        <div class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                @if (Session["UserName"] != null)
+                                {
+                                    <text>@Session["UserName"]</text>
+                                }
+                                <img src="@Url.Content("~/Images/Images_Account/" + (Session["UserImage"] ?? "default_account.png"))" alt="User Image" class="rounded-circle user-img">
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="@Url.Action("Logout", "Auth")">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <div>
+                    @RenderBody()
+                </div>
+                <div class="audio-player-container hidden">
+                    <div class="audio-info">
+                        <img id="audioImage" src="~/Images/Images_Music/default.jpg" alt="Album Art" class="album-art">
+                        <div class="audio-details">
+                            <h5 id="audioTitle">Tên bài hát</h5>
+                            <p id="audioSinger">Tên ca sĩ</p>
+                        </div>
+                        <i class="fa-regular fa-heart" id="favoriteIcon" onclick="toggleFavorite(this)"></i>
+                    </div>
+                    <audio id="audioPlayer" controls="controls">
+                        <source id="audioSource" src="" type="audio/mpeg" />
+                    </audio>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const musicImages = document.querySelectorAll('.card-img-left, .theloai_card');
+            const musicTitles = document.querySelectorAll('.music-title');
+            const audioPlayerContainer = document.querySelector('.audio-player-container');
+
+            function playMusic(musicId, musicImage, musicTitle, musicSinger) {
+                const audioSource = document.getElementById('audioSource');
+                audioSource.src = `/Musics/${musicId}.mp3`;
+
+                const audioElement = document.getElementById('audioPlayer');
+                audioElement.load();
+                audioElement.play();
+
+                document.getElementById('audioImage').src = `/Images/Images_Music/${musicImage}`;
+                document.getElementById('audioTitle').innerText = musicTitle;
+                document.getElementById('audioSinger').innerText = musicSinger;
+
+                // Hiện thanh phát nhạc khi có bài hát được chọn
+                audioPlayerContainer.classList.remove('hidden');
+            }
+
+            function stopMusic() {
+                const audioElement = document.getElementById('audioPlayer');
+                audioElement.pause();
+                audioElement.currentTime = 0;
+
+                // Ẩn thanh phát nhạc khi không có bài hát được chọn
+                audioPlayerContainer.classList.add('hidden');
+            }
+
+            musicImages.forEach(image => {
+                image.addEventListener('click', function () {
+                    const musicId = this.getAttribute('data-id');
+                    const musicImage = this.src.split('/').pop();
+                    const musicTitle = this.getAttribute('data-title');
+                    const musicSinger = this.getAttribute('data-singer');
+                    playMusic(musicId, musicImage, musicTitle, musicSinger);
+                });
+            });
+
+            musicTitles.forEach(title => {
+                title.addEventListener('click', function () {
+                    const musicId = this.getAttribute('data-id');
+                    const musicImage = this.closest('td').querySelector('.card-img-left, .theloai_card').src.split('/').pop();
+                    const musicTitle = this.getAttribute('data-title');
+                    const musicSinger = this.getAttribute('data-singer');
+                    playMusic(musicId, musicImage, musicTitle, musicSinger);
+                });
+            });
+
+            // Sự kiện khi người dùng dừng phát nhạc hoặc nhạc kết thúc
+            document.getElementById('audioPlayer').addEventListener('pause', function () {
+                if (this.currentTime === 0) {
+                    stopMusic();
+                }
+            });
+
+            document.getElementById('audioPlayer').addEventListener('ended', stopMusic);
+
+            function toggleFavorite(icon) {
+                icon.classList.toggle('fa-regular');
+                icon.classList.toggle('fa-solid');
+            }
+        });
+
+
+    </script>
+
+</body>
+</html>

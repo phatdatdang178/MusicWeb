@@ -1,0 +1,54 @@
+﻿@model WebsiteMusic.Areas.User_Website.Data.UAccountVM
+
+@{
+    ViewBag.Title = "Đăng Ký";
+    Layout = null;
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Đăng Ký Tài Khoản</h4>
+                </div>
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    @using (Html.BeginForm("DangKy", "DNDK", FormMethod.Post, new { @class = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.AccountName, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.AccountName, new { @class = "form-control", placeholder = "Nhập tên tài khoản" })
+                            @Html.ValidationMessageFor(model => model.AccountName, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.AccountEmail, new { @class = "form-label" })
+                            @Html.TextBoxFor(model => model.AccountEmail, new { @class = "form-control", placeholder = "Nhập địa chỉ email" })
+                            @Html.ValidationMessageFor(model => model.AccountEmail, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(model => model.AccountPassword, new { @class = "form-label" })
+                            @Html.PasswordFor(model => model.AccountPassword, new { @class = "form-control", placeholder = "Nhập mật khẩu" })
+                            @Html.ValidationMessageFor(model => model.AccountPassword, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Đăng Ký</button>
+                            <a href="@Url.Action("DangNhap", "DNDK")" class="btn btn-secondary">Quay lại Đăng Nhập</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

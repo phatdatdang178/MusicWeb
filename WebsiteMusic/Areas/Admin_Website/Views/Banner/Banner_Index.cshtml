@@ -1,0 +1,184 @@
+﻿@model IEnumerable<WebsiteMusic.Areas.Admin_Website.Data.BannerVM>
+
+@{
+    ViewBag.Title = "Quản lý banner";
+    Layout = "~/Areas/Admin_Website/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .vertical-align-middle {
+        vertical-align: middle !important;
+    }
+</style>
+
+<div style="border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">
+    <div class="table-responsive p-3">
+        <div class="d-flex justify-content-end m-2">
+            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addBannerModal">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Hình ảnh</th>
+                    <th>Mô tả</th>
+                    <th>Tùy chọn</th>
+                </tr>
+            </thead>
+            <tbody id="bannerTableBody">
+                @foreach (var item in Model)
+                {
+                    <tr data-id="@item.BannerId">
+                        <td class="vertical-align-middle">
+                            @if (!string.IsNullOrEmpty(item.BannerImageFileName))
+                            {
+                                <img style="width:70px" src="@Url.Content("~/Images/Images_Banner/" + item.BannerImageFileName)" alt="Banner Image" />
+                            }
+                            else
+                            {
+                                <span>Không có hình ảnh!</span>
+                            }
+                        </td>
+                        <td class="vertical-align-middle">
+                            @Html.DisplayFor(modelItem => item.BannerDetaill)
+                        </td>
+                        <td class="vertical-align-middle">
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editBannerModal" data-id="@item.BannerId">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteBannerModal" data-id="@item.BannerId">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Banner Modal -->
+<div class="modal fade" id="addBannerModal" tabindex="-1" aria-labelledby="addBannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addBannerModalLabel">Thêm Banner</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("AddBanner", "Banner", FormMethod.Post, new { id = "addBannerForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        @Html.Label("BannerImage", "Banner Image", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="BannerImage" id="addBannerImage" />
+                        <span class="text-danger" id="addBannerImageError" style="display: none;">Hình ảnh không được để trống.</span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("BannerDetaill", "Mô tả", new { @class = "form-label" })
+                        <input class="form-control" name="BannerDetaill" required />
+                        <span class="text-danger" data-valmsg-for="BannerDetaill" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" onclick="return validateAddBannerForm()">Lưu</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Banner Modal -->
+<div class="modal fade" id="editBannerModal" tabindex="-1" aria-labelledby="editBannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBannerModalLabel">Sửa Banner</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("EditBanner", "Banner", FormMethod.Post, new { id = "editBannerForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("BannerId", null)
+                    <div class="mb-3">
+                        @Html.Label("BannerImage", "Banner Image", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="BannerImage" />
+                        <span class="text-danger" data-valmsg-for="BannerImage" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("BannerDetaill", "Mô tả", new { @class = "form-label" })
+                        <input class="form-control" name="BannerDetaill" required />
+                        <span class="text-danger" data-valmsg-for="BannerDetaill" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Banner Modal -->
+<div class="modal fade" id="deleteBannerModal" tabindex="-1" aria-labelledby="deleteBannerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteBannerModalLabel">Xóa Banner</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa Banner này không?</p>
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("DeleteBanner", "Banner", FormMethod.Post, new { id = "deleteBannerForm" }))
+                {
+                    @Html.Hidden("BannerId", null)
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    function validateAddBannerForm() {
+        var imageInput = document.getElementById('addBannerImage');
+        var errorSpan = document.getElementById('addBannerImageError');
+
+        if (!imageInput.value) {
+            errorSpan.style.display = 'inline';
+            return false;
+        }
+
+        errorSpan.style.display = 'none';
+        return true;
+    }
+
+    $(document).ready(function () {
+        // Show edit modal and populate fields
+        $('#editBannerModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var bannerId = button.data('id');
+            var modal = $(this);
+
+            $.get('@Url.Action("EditBanner", "Banner")', { id: bannerId }, function (data) {
+                modal.find('[name="BannerId"]').val(data.BannerId);
+                modal.find('[name="BannerDetaill"]').val(data.BannerDetaill);
+            });
+        });
+
+        // Show delete modal and set the BannerId
+        $('#deleteBannerModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var bannerId = button.data('id');
+            var modal = $(this);
+            modal.find('[name="BannerId"]').val(bannerId);
+        });
+    });
+</script>

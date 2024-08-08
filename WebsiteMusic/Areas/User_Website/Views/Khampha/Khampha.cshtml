@@ -1,0 +1,153 @@
+﻿@{
+    ViewBag.Title = "Khampha";
+    Layout = "~/Areas/User_Website/Views/Shared/_LayoutUser.cshtml";
+}
+<style>
+    .all {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap; /* Cho phép các phần tử chuyển sang dòng mới nếu cần */
+    }
+
+    .all-danhmuc {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+        .all-danhmuc p {
+            font-size: 13px;
+            font-weight: lighter;
+            margin: 0; /* Đảm bảo không có margin không mong muốn */
+        }
+
+    .hover-container {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        color: #3e3c45;
+        transition: color 0.3s;
+    }
+
+        .hover-container .icon {
+            width: 10px;
+            height: 10px;
+            fill: currentColor;
+            transition: fill 0.3s;
+        }
+
+        .hover-container:hover {
+            color: #ff6600;
+        }
+
+            .hover-container:hover .icon {
+                fill: #ff6600;
+            }
+</style>
+<div class="video-container mt-4">
+    <video autoplay loop muted>
+        <source src="~/Images/UserImage/video1.mp4" type="video/mp4">
+        Trình duyệt của bạn không hỗ trợ thẻ video.
+    </video>
+</div>
+
+<div class="nation-container mt-5">
+    @foreach (var nation in ViewBag.Nations)
+    {
+        <div class="card nation-card text-bg-dark mt-5">
+            <img src="@Url.Content("~/Images/Images_Nation/" + nation.NationImageFileName)" class="card-img" alt="...">
+            <div class="overlay"></div>
+            <div class="card-img-overlay nation-card-img-overlay">
+                <h2 class="card-title nation-card-title">@nation.NationName</h2>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="tab-content mt-5">
+    <h5 class="title" style="font-weight: 600;">MỚI PHÁT HÀNH</h5>
+    <div class="all">
+        <div class="all-danhmuc">
+            <p class="hover-container">
+                @Html.ActionLink("Tất cả", "Moiphathanh", "Moiphathanh", "Views", new { @class = "nav-link" })
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                    <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
+                </svg>
+            </p>
+        </div>
+        <div class="row p-4" id="card-container">
+            @foreach (var music in ViewBag.LatestReleases)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="row g-0 card-horizontal">
+                            <div class="col-3">
+                                <img class="card-img-left" src="@Url.Content("~/Images/Images_Music/" + music.MusicImageFileName)" data-id="@music.MusicId" data-title="@music.MusicName" data-singer="@music.MusicSinger" alt="@music.MusicName" />
+                            </div>
+                            <div class="col-9">
+                                <div class="card-body">
+                                    <h5 class="card-title music-title">@music.MusicName</h5>
+                                    <p class="card-text mb-1"><small class="text-muted">@music.MusicSinger</small></p>
+                                    <p class="card-text"><small class="text-muted">@music.MusicDate</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <!-- Top Music section -->
+    <div class="tab-content mt-5">
+        <h5 class="title" style="font-weight: 600;">BXH NHẠC MỚI</h5>
+        <div id="carouselExample" class="carousel slide">
+            <div class="carousel-inner">
+                @{
+                    var topMusicList = ViewBag.TopMusicByListen as List<WebsiteMusic.Areas.User_Website.Data.UMusicVM>;
+
+                    if (topMusicList != null && topMusicList.Any())
+                    {
+                        int itemCount = topMusicList.Count;
+                        int numberOfItemsPerSlide = 3;
+                        int numberOfSlides = (int)Math.Ceiling((double)itemCount / numberOfItemsPerSlide);
+
+                        for (int i = 0; i < numberOfSlides; i++)
+                        {
+                            var itemsForSlide = topMusicList.Skip(i * numberOfItemsPerSlide).Take(numberOfItemsPerSlide);
+                            int startIndex = i * numberOfItemsPerSlide;
+
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                @foreach (var music in itemsForSlide)
+                                {
+                                    int itemIndex = startIndex + topMusicList.IndexOf(music) - (i * numberOfItemsPerSlide) + 1;
+                                    <div class="bxh-item">
+                                        <img data-id="@music.MusicId" data-title="@music.MusicName" data-singer="@music.MusicSinger" src="@Url.Content("~/Images/Images_Music/" + music.MusicImageFileName)" class="card-img-left" alt="...">
+                                        <div class="m-2">
+                                            <p>@music.MusicName</p>
+                                            <p>@music.MusicSinger</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="carousel-item active">
+                            <p>No music available.</p>
+                        </div>
+                    }
+                }
+            </div>
+            <button class="carousel-control-prev slidebutton" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next slidebutton" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>

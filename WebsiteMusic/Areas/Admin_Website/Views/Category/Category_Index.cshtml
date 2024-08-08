@@ -1,0 +1,169 @@
+﻿@model IEnumerable<WebsiteMusic.Areas.Admin_Website.Data.CategoryVM>
+
+@{
+    ViewBag.Title = "Quản lý thể loại";
+    Layout = "~/Areas/Admin_Website/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .vertical-align-middle {
+        vertical-align: middle !important;
+    }
+</style>
+
+<div style="border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">
+    <div class="table-responsive p-3">
+        <div class="d-flex justify-content-end m-2">
+            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Hình ảnh</th>
+                    <th>Tên thể loại</th>
+                    <th>Tùy chọn</th>
+                </tr>
+            </thead>
+            <tbody id="categoryTableBody">
+                @foreach (var item in Model)
+                {
+                    <tr data-id="@item.CategoryId">
+                        <td class="vertical-align-middle">
+                            @if (!string.IsNullOrEmpty(item.CategoryImageFileName))
+                            {
+                                <img style="width:70px" src="@Url.Content("~/Images/Images_Category/" + item.CategoryImageFileName)" alt="Category Image" />
+                            }
+                            else
+                            {
+                                <span>Không có hình ảnh!</span>
+                            }
+                        </td>
+                        <td class="vertical-align-middle">
+                            @Html.DisplayFor(modelItem => item.CategoryName)
+                        </td>
+                        <td class="vertical-align-middle">
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editCategoryModal" data-id="@item.CategoryId">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal" data-id="@item.CategoryId">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Thêm thể loại</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("AddCategory", "Category", FormMethod.Post, new { id = "addCategoryForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        @Html.Label("CategoryImage", "Ảnh thể loại", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="CategoryImage" />
+                        <span class="text-danger" data-valmsg-for="CategoryImage" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("CategoryName", "Tên thể loại", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="CategoryName" required />
+                        <span class="text-danger" data-valmsg-for="CategoryName" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Category Modal -->
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCategoryModalLabel">Sửa thể loại</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("EditCategory", "Category", FormMethod.Post, new { id = "editCategoryForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("CategoryId", null)
+                    <div class="mb-3">
+                        @Html.Label("CategoryImage", "Ảnh thể loại", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="CategoryImage" />
+                        <span class="text-danger" data-valmsg-for="CategoryImage" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("CategoryName", "Tên thể loại", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="CategoryName" required />
+                        <span class="text-danger" data-valmsg-for="CategoryName" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Category Modal -->
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCategoryModalLabel">Xóa thể loại</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa thể loại này không?</p>
+            </div>
+            <div class="modal-footer">
+                @using (Html.BeginForm("DeleteCategory", "Category", FormMethod.Post, new { id = "deleteCategoryForm" }))
+                {
+                    @Html.Hidden("CategoryId", null)
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#editCategoryModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var categoryId = button.data('id');
+            var modal = $(this);
+
+            $.get('@Url.Action("EditCategory", "Category")', { id: categoryId }, function (data) {
+                modal.find('[name="CategoryId"]').val(data.CategoryId);
+                modal.find('[name="CategoryName"]').val(data.CategoryName);
+            });
+        });
+
+        $('#deleteCategoryModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var categoryId = button.data('id');
+            var modal = $(this);
+            modal.find('[name="CategoryId"]').val(categoryId);
+        });
+    });
+</script>

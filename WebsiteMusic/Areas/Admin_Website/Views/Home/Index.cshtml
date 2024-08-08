@@ -1,0 +1,130 @@
+﻿@model WebsiteMusic.Areas.Admin_Website.Data.HomeDisplayVM
+
+@{
+    ViewBag.Title = "Trang chủ";
+    Layout = "~/Areas/Admin_Website/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row" style="padding-bottom: 20px">
+    <div class="col-4">
+        <div style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 5px; padding: 20px; background-color: rgb(36, 139, 214); height: 140px ">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 23px; font-weight: 500; color: #FFFFFF;">Bài hát</h3>
+                <i class="fas fa-music" style="color: #FFF; font-size: 50px; padding: 0;"></i>
+            </div>
+            <div>
+                <h2 style="color: #FFFFFF; text-align: center">
+                    <span style="font-size: 40px; font-weight:600">@Model.TotalSongs</span>
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 5px; padding: 20px; background-color: rgb(36, 139, 214); height: 140px ">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 23px; font-weight: 500; color: #FFFFFF;">Lượt nghe</h3>
+                <i class="fas fa-headphones" style="color: #FFF; font-size: 50px; padding: 0;"></i>
+            </div>
+            <div>
+                <h2 style="color: #FFFFFF; text-align: center">
+                    <span style="font-size: 40px; font-weight:600">@Model.TotalListens</span>
+                </h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-4">
+        <div style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 5px; padding: 20px; background-color: rgb(36, 139, 214); height: 140px ">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 23px; font-weight: 500; color: #FFFFFF;">Lượt thích</h3>
+                <i class="fas fa-thumbs-up" style="color: #FFF; font-size: 50px; padding: 0;"></i>
+            </div>
+            <div>
+                <h2 style="color: #FFFFFF; text-align: center">
+                    <span style="font-size: 40px; font-weight:600">@Model.TotalLikes</span>
+                </h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="padding-bottom: 20px">
+    <div class="col-8">
+        <div style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 5px; padding: 20px; background-color: #FFFFFF; height: 410px;">
+            <h3 style="font-size: 23px; font-weight: 500; color: #000;">BXH Lượt nghe</h3>
+            <canvas id="lineChart"></canvas>
+        </div>
+    </div>
+    <div class="col-4">
+        <div style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); border-radius: 5px; padding: 20px; background-color: #FFFFFF; height: 410px;">
+            <h3 style="font-size: 23px; font-weight: 500; color: #000;">Bài hát theo thể loại</h3>
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    var ctxLine = document.getElementById('lineChart').getContext('2d');
+    var lineChart = new Chart(ctxLine, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Json.Encode(Model.TopSongs)),
+            datasets: [{
+                label: 'Lượt nghe',
+                data: @Html.Raw(Json.Encode(Model.TopListens)),
+                borderColor: 'rgba(68, 192, 192)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Số lượt nghe'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Bài hát'
+                    }
+                }
+            }
+        }
+    });
+
+    var ctxPie = document.getElementById('pieChart').getContext('2d');
+    var pieChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+            labels: @Html.Raw(Json.Encode(Model.SongsByCategory.Keys.ToList())),
+            datasets: [{
+                label: 'Bài hát',
+                data: @Html.Raw(Json.Encode(Model.SongsByCategory.Values.ToList())),
+                backgroundColor: [
+                    'rgba(255, 99, 132)',
+                    'rgba(54, 162, 235)',
+                    'rgba(255, 206, 86)',
+                    'rgba(75, 192, 192)',
+                    'rgba(153, 102, 255)',
+                    'rgba(255, 159, 64)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'right'
+                }
+            }
+        }
+    });
+</script>

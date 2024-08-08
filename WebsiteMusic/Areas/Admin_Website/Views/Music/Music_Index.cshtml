@@ -1,0 +1,257 @@
+﻿@model IEnumerable<WebsiteMusic.Areas.Admin_Website.Data.MusicVM>
+
+@{
+    ViewBag.Title = "Quản lý bài hát";
+    Layout = "~/Areas/Admin_Website/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .vertical-align-middle {
+        vertical-align: middle !important;
+    }
+</style>
+
+<div style="border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);">
+    <div class="table-responsive p-3">
+        <div class="d-flex justify-content-end m-2">
+            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addMusicModal">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Hình ảnh</th>
+                    <th>Tên bài hát</th>
+                    <th>Ca sĩ</th>
+                    <th>Ngày phát hành</th>
+                    <th>Thể loại</th>
+                    <th>Quốc gia</th>
+                    <th>Lượt thích</th>
+                    <th>Tùy chọn</th>
+                </tr>
+            </thead>
+            <tbody id="musicTableBody">
+                @foreach (var item in Model)
+                {
+                    <tr class="vertical-align-middle" data-id="@item.MusicId">
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.MusicImageFileName))
+                            {
+                                <img style="width:70px" src="@Url.Content("~/Images/Images_Music/" + item.MusicImageFileName)" alt="Music Image" />
+                            }
+                            else
+                            {
+                                <span>Không có hình ảnh !</span>
+                            }
+                        </td>
+                        <td class="vertical-align-middle">@Html.DisplayFor(modelItem => item.MusicName)</td>
+                        <td class="vertical-align-middle">@Html.DisplayFor(modelItem => item.MusicSinger)</td>
+                        <td class="vertical-align-middle">@Html.DisplayFor(modelItem => item.MusicDate)</td>
+                        <td class="vertical-align-middle">@Html.DisplayFor(modelItem => item.CategoryName)</td>
+                        <td class="vertical-align-middle">@Html.DisplayFor(modelItem => item.NationName)</td>
+                        <td class="vertical-align-middle">@Html.DisplayFor(modelItem => item.MusicLikes)</td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editMusicModal" data-id="@item.MusicId">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteMusicModal" data-id="@item.MusicId">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Music Modal -->
+<div class="modal fade" id="addMusicModal" tabindex="-1" aria-labelledby="addMusicModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addMusicModalLabel">Thêm bài hát</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("AddMusic", "Music", FormMethod.Post, new { id = "addMusicForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        @Html.Label("MusicName", "Tên bài hát", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="MusicName" required />
+                        <span class="text-danger" data-valmsg-for="MusicName" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("MusicSinger", "Ca sĩ", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="MusicSinger" required />
+                        <span class="text-danger" data-valmsg-for="MusicSinger" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("MusicDate", "Ngày phát hành", new { @class = "form-label" })
+                        <input type="date" class="form-control" name="MusicDate" required />
+                        <span class="text-danger" data-valmsg-for="MusicDate" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("CategoryId", "Thể loại", new { @class = "form-label" })
+                        <select class="form-control" name="CategoryId" required>
+                            <option value="">--- Chọn thể loại ---</option>
+                            @foreach (var category in ViewBag.CategoryId as SelectList)
+                            {
+                                <option value="@category.Value">@category.Text</option>
+                            }
+                        </select>
+                        <span class="text-danger" data-valmsg-for="CategoryId" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("NationId", "Quốc gia", new { @class = "form-label" })
+                        <select class="form-control" name="NationId" required>
+                            <option value="">--- Chọn quốc gia ---</option>
+                            @foreach (var nation in ViewBag.NationId as SelectList)
+                            {
+                                <option value="@nation.Value">@nation.Text</option>
+                            }
+                        </select>
+                        <span class="text-danger" data-valmsg-for="NationId" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("MusicImage", "Hình ảnh", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="MusicImage" />
+                        <span class="text-danger" data-valmsg-for="MusicImage" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("MusicLink", "Liên kết bài hát", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="MusicLink" required />
+                        <span class="text-danger" data-valmsg-for="MusicLink" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Music Modal -->
+<div class="modal fade" id="editMusicModal" tabindex="-1" aria-labelledby="editMusicModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMusicModalLabel">Sửa bài hát</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("EditMusic", "Music", FormMethod.Post, new { id = "editMusicForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("MusicId", null)
+                    <div class="mb-3">
+                        @Html.Label("MusicName", "Tên bài hát", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="MusicName" required />
+                        <span class="text-danger" data-valmsg-for="MusicName" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("MusicSinger", "Ca sĩ", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="MusicSinger" required />
+                        <span class="text-danger" data-valmsg-for="MusicSinger" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("MusicDate", "Ngày phát hành", new { @class = "form-label" })
+                        <input type="date" class="form-control" name="MusicDate" required />
+                        <span class="text-danger" data-valmsg-for="MusicDate" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("CategoryId", "Thể loại", new { @class = "form-label" })
+                        <select class="form-control" name="CategoryId" required>
+                            <option value="">--- Chọn thể loại ---</option>
+                            @foreach (var category in ViewBag.CategoryId as SelectList)
+                            {
+                                <option value="@category.Value">@category.Text</option>
+                            }
+                        </select>
+                        <span class="text-danger" data-valmsg-for="CategoryId" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("NationId", "Quốc gia", new { @class = "form-label" })
+                        <select class="form-control" name="NationId" required>
+                            <option value="">--- Chọn quốc gia ---</option>
+                            @foreach (var nation in ViewBag.NationId as SelectList)
+                            {
+                                <option value="@nation.Value">@nation.Text</option>
+                            }
+                        </select>
+                        <span class="text-danger" data-valmsg-for="NationId" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("MusicImage", "Hình ảnh", new { @class = "form-label" })
+                        <input type="file" class="form-control" name="MusicImage" />
+                        <span class="text-danger" data-valmsg-for="MusicImage" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="mb-3">
+                        @Html.Label("MusicLink", "Liên kết bài hát", new { @class = "form-label" })
+                        <input type="text" class="form-control" name="MusicLink" required />
+                        <span class="text-danger" data-valmsg-for="MusicLink" data-valmsg-replace="true"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Music Modal -->
+<div class="modal fade" id="deleteMusicModal" tabindex="-1" aria-labelledby="deleteMusicModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteMusicModalLabel">Xóa bài hát</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("DeleteMusic", "Music", FormMethod.Post, new { id = "deleteMusicForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="MusicId" />
+                    <p>Bạn có chắc chắn muốn xóa bài hát này không?</p>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-danger">Xóa</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#editMusicModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var musicId = button.data('id');
+
+            $.get('@Url.Action("EditMusic", "Music")', { id: musicId }, function (data) {
+                $('#editMusicForm').find('[name="MusicId"]').val(data.MusicId);
+                $('#editMusicForm').find('[name="MusicName"]').val(data.MusicName);
+                $('#editMusicForm').find('[name="MusicSinger"]').val(data.MusicSinger);
+                $('#editMusicForm').find('[name="MusicDate"]').val(data.MusicDate ? data.MusicDate.split('T')[0] : '');
+                $('#editMusicForm').find('[name="CategoryId"]').val(data.CategoryId);
+                $('#editMusicForm').find('[name="NationId"]').val(data.NationId);
+                $('#editMusicForm').find('[name="MusicLink"]').val(data.MusicLink);
+            });
+        });
+
+        $('#deleteMusicModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var musicId = button.data('id');
+            $('#deleteMusicModal').find('[name="MusicId"]').val(musicId);
+        });
+    });
+</script>

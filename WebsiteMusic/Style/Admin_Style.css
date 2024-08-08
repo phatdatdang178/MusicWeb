@@ -1,0 +1,38 @@
+﻿.navbar {
+    background-color: #fff;
+    height: 62px;
+    margin: 0 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+    font-weight: 500;
+    color: #248BD6;
+    font-size: 20px;
+    transition: 0.3s color;
+}
+
+.navbar-toggler {
+    border: none;
+    font-size: 20px;
+}
+
+.navbar-toggler:focus, .btn-close:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.nav-link {
+    color: #666777;
+    position: relative;
+    font-size: 16px;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: #248BD6;
+}
+
+.dropdown_hover:hover {
+    background-color: #248BD6;
+    color: #fff;
+}

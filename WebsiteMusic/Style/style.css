@@ -1,0 +1,522 @@
+body,
+html {
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+}
+.TEN1 {
+    /* Tạo gradient màu */
+    background: linear-gradient(to right, #4b2bdb, #feb47b);
+    /* Đặt màu nền ở dạng văn bản */
+    -webkit-background-clip: text;
+    /* Ẩn màu văn bản để chỉ hiển thị gradient */
+    color: transparent;
+    /* Thêm các thuộc tính khác để văn bản hiển thị đẹp hơn */
+
+    font-family: Arial, sans-serif;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+}
+.sidebar {
+    background-color: #f8f9fa;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 16.666667%;
+    overflow-y: auto;
+    padding: 20px 0;
+}
+.logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    justify-content: center;
+}
+.content {
+    padding: 20px;
+}
+.video-container {
+    width: 999px; /* Chiều rộng của khung chứa video */
+    height: 300px; /* Chiều cao của khung chứa video */
+    margin: 0 auto; /* Căn giữa khung chứa video */
+    overflow: hidden; /* Ẩn phần video vượt ra ngoài khung */
+    position: relative; /* Thiết lập position để sử dụng cho video */
+}
+
+.video-container video {
+    width: 100%; /* Đặt video đầy đủ chiều rộng của khung chứa */
+    height: 100%; /* Đặt video đầy đủ chiều cao của khung chứa */
+    object-fit: cover; /* Điều chỉnh để video bao phủ toàn bộ khung chứa */
+}
+
+.play-button.paused i {
+    content: '\f04c'; /* FontAwesome pause icon */
+}
+
+.play-button.playing i {
+    content: '\f04b'; /* FontAwesome play icon */
+}
+.list-group {
+    background-color: #f8f9fa;
+    border-radius: 0;
+    margin: 1px;
+}
+.list-group-item {
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
+    border-radius: 0;
+    position: relative;
+    cursor: pointer;
+}
+.list-group-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 5px;
+    background-color: transparent;
+    transition: background-color 0.3s;
+}
+.list-group-item.active::before,
+.list-group-item:focus::before {
+    background-color: blue;
+}
+.list-group-item.active,
+.list-group-item:focus {
+    background-color: #f0f0f0 !important;
+    border-color: #f8f9fa !important;
+    color: #333 !important;
+}
+.sidebar a.custom-link {
+    display: block;
+    padding: 10px 20px;
+    color: #000;
+    text-decoration: none;
+}
+a.custom-link:hover {
+    color: blue;
+}
+
+.navbar {
+    padding: 15px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 16.666667%; /* Điều chỉnh để phù hợp với chiều rộng của sidebar */
+    z-index: 1030; /* Đảm bảo navbar ở trên các nội dung khác */
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    box-shadow: 0 4px 4px -4px rgba(0, 0, 0, 0.2); /* Chỉ đổ bóng ở phần dưới */
+}
+
+.search-input {
+    border-radius: 20px;
+    width: 50%;
+}
+
+.all-danhmuc{
+    display: flex;
+    justify-content:flex-end ;
+    align-items: center;
+}
+
+.all-danhmuc p{
+    font-size: 13px;
+    font-weight: lighter;
+}
+
+.all{
+    display: flex;
+    justify-content:space-between ;
+    align-items: center;
+}
+
+.all p{
+    font-size: 13px;
+    font-weight: lighter;
+}
+
+
+.album-name h2{
+    color: #3e3c45;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+/* Khung chứa các nút */
+.button-container {
+    display: flex;
+    gap: 10px; /* Khoảng cách giữa các nút */
+}
+
+/* Kiểu dáng mặc định của các nút */
+.button-container button {
+    border-radius: 20px;
+    width: 100px;
+    font-size: 14px;
+    border: 2px solid rgba(56, 56, 66, 0.849);
+    background-color: #ffffff; /* Màu nền mặc định */
+    color: rgba(56, 56, 66, 0.849); /* Màu chữ mặc định */
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển màu mượt mà */
+}
+
+/* Kiểu dáng của nút khi được chọn */
+.button-container button.active {
+    background-color: #4b2bdb; /* Màu nền khi nút được chọn */
+    color: white; /* Màu chữ khi nút được chọn */
+    border: 2px solid #4b2bdb; /* Màu viền khi nút được chọn */
+}
+
+/* Loại bỏ viền khi nút được chọn bằng bàn phím */
+.button-container button:focus {
+    outline: none;
+}
+
+
+
+.hover-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer; /* Thay đổi con trỏ khi di chuột qua */
+    color: #3e3c45; /* Màu chữ mặc định */
+    transition: color 0.3s; /* Hiệu ứng chuyển màu */
+}
+
+.hover-container .icon {
+    width: 10px;
+    height: 10px;
+    fill: currentColor; /* Làm cho màu của SVG đồng bộ với màu văn bản */
+    transition: fill 0.3s; /* Hiệu ứng chuyển màu cho icon */
+}
+
+.hover-container:hover {
+    color: #ff6600; /* Màu chữ khi di chuột qua */
+}
+
+.hover-container:hover .icon {
+    fill: #ff6600; /* Màu của SVG khi di chuột qua */
+}
+
+.nation-container{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.nation-card{
+    width: 311px;
+    height: 80px;
+    position: relative;
+    display: inline-block;
+    border-radius: 8px; /* Ví dụ bo góc của ảnh hoặc phần tử chứa */
+    overflow: hidden; /* Đảm bảo rằng bo góc được áp dụng cho các phần tử con */
+}
+
+.card-img{
+    transition: transform 0.3s ease; 
+}
+
+.nation-card img{
+    max-width: 100%;
+    max-height: 80px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+}
+.nation-card:hover .card-img {
+    transform: scale(1.1); /* Phóng to phần tử bên trong lên 10% */
+}
+
+.nation-card-img-overlay{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.nation-card .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Màu nền đen với 50% độ trong suốt */
+    pointer-events: none; /* Đảm bảo lớp phủ không cản trở việc tương tác với các phần tử phía dưới */
+    border-radius: 8px; /* Đảm bảo lớp phủ cũng có bo góc giống như phần tử chứa */
+}
+
+.nation-card-img-overlay h2{
+    font-size: 30px;
+}
+
+.chill-container{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+.chill-card{
+    width: 210px;
+    height: 210px;
+    position: relative;
+    display: inline-block;
+    border-radius: 8px; /* Ví dụ bo góc của ảnh hoặc phần tử chứa */
+    overflow: hidden; /* Đảm bảo rằng bo góc được áp dụng cho các phần tử con */
+}
+
+.chill-card img{
+    max-width: 100%;
+    height:210px ;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+}
+
+.chill-card p{
+    font-size: 16px;
+}
+
+.chill-card:hover .card-img {
+    transform: scale(1.1); /* Phóng to phần tử bên trong lên 10% */
+}
+
+.input-group-text {
+    border-radius: 20px 0 0 20px;
+    border-right: none;
+}
+
+.form-control {
+    border-radius: 0 20px 20px 0;
+    border-left: none;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+.user-img {
+    width: 35px;
+    margin-right: 10px;
+}
+
+.card-horizontal {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0;
+}
+
+.card-img-left {
+    width: 70px;
+    height: 70px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.card-title {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.card-text {
+    font-size: 12px;
+}
+
+.card {
+    border: none;
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.carousel-item {
+    display: flex;
+    flex-direction: row; /* Đảm bảo các phần tử con nằm theo hàng ngang */
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+
+.carousel-item .bxh-item {
+    width: 280px;
+    height: 150px;
+    margin: 10px;
+    border-radius: 10px;
+    background-color: #515054;
+}
+
+.bxh-item{
+    display: flex;
+    justify-content: start;
+}
+
+.bxh-item img{
+    width: 115px;
+    height: 115px;
+    margin-top: 15px;
+    margin-left: 15px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+.bxh-item p{
+    margin: 0%;
+    color: #ddd;
+    font-weight: normal;
+}
+
+.bxh-item h2{
+    margin-top: 40px;
+    color: #ddd;
+    font-weight: normal;
+}
+.carousel-control-prev, .carousel-control-next {
+    width: 5%;
+}
+
+.carousel-control-prev {
+    left: -2%;
+}
+
+.carousel-control-next {
+    right: -2%;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    background-color: #585859; /* Màu nền của nút điều khiển */
+    border: none; /* Xóa viền nếu không muốn có viền */
+    border-radius: 50%; /* Đặt nút điều khiển thành hình tròn */
+    width: 40px; /* Chiều rộng của nút điều khiển */
+    height: 40px; /* Chiều cao của nút điều khiển */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*Trang bang xep hang*/
+.bxh-stt1,.bxh-stt2,.bxh-stt3{
+    font-weight: bold;
+    font-size: 50px;
+}
+
+.bxh-stt{
+    font-weight: bold;
+    font-size: 50px;
+}
+.bxh-stt1 p{
+   color: #00ff4c;
+}
+
+.bxh-stt2 p{
+    color: #4b2bdb;
+ }
+
+ .bxh-stt3 p{
+    color: #eb550a;
+ }
+
+.bxh-song{
+    display: flex;
+}
+
+ .bxh-img{
+    width: 90px;
+    height: 90px;
+    border-radius: 10px;
+ }
+.icon-filled {
+    color: red;
+}
+
+.theloai-img{
+    object-fit: cover;
+    max-width: 100%;
+}
+/*Trang the loai*/
+.video-container img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+}
+
+/*Trang yeu thich
+*/
+.yeuthich-img{
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+}
+/*trang phat nhac*/
+body, html {
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+    margin: 0;
+}
+
+.music-player {
+    background-color: #282828;
+    color: #ffffff;
+    padding: 10px;
+    border-top: 1px solid #444;
+    z-index: 1000;
+}
+
+.album-art {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.song-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    margin-left: 10px;
+}
+
+.song-title {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.song-artist {
+    font-size: 0.9rem;
+    color: #b3b3b3;
+}
+
+.progress-bar-container {
+    margin-top: 5px;
+}
+
+.form-range {
+    width: 100%;
+    background-color: #444;
+    border-radius: 5px;
+    height: 5px;
+}
+
+.controls button {
+    margin: 0 5px;
+    background: none;
+    border: none;
+    color: #ffffff;
+}
+
+.controls i {
+    font-size: 1.5rem;
+}
+
+
+
